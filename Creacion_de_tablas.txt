@@ -1,0 +1,129 @@
+﻿create table tipo_personal(
+idp varchar(50) PRIMARY KEY,
+descripcionp varchar(50) not null
+);
+
+create table personal(
+ci integer PRIMARY KEY,
+nombre varchar(50) not null,
+apellido varchar(50) not null,
+direccion varchar(50),
+celular integer,
+sexo varchar(1),
+idp varchar(50) not null,
+FOREIGN KEY (idp) references tipo_personal(idp)
+ON DELETE CASCADE
+ON UPDATE CASCADE
+);
+
+create table usuario(
+idusuario varchar(20) PRIMARY KEY,
+contraseña varchar(50) not null,
+ci integer not null,
+FOREIGN KEY (ci) references personal(ci)
+ON DELETE CASCADE
+ON UPDATE CASCADE      
+);
+
+create table proveedor(
+codip serial PRIMARY KEY,
+ci integer not null,
+nombre varchar(50) not null,
+apellido varchar(50) not null,
+sexo varchar(1),
+direccion varchar(50),
+celular integer
+);
+
+create table compra(
+codicom serial PRIMARY KEY,
+fechacompra date not null,
+totalcompra integer not null,
+codip integer not null,
+ci integer not null,
+FOREIGN KEY (codip) references proveedor(codip),
+FOREIGN KEY (ci) references personal(ci)
+ON DELETE CASCADE
+ON UPDATE CASCADE
+);
+
+create table tipo_producto(
+coditp integer PRIMARY KEY,
+descripcion varchar(50) not null
+);
+
+create table producto(
+codiprod serial PRIMARY KEY,
+descripcion varchar(50) not null,
+cantidadstock integer,
+precio integer not null,
+ci integer not null,
+coditp integer not null,
+FOREIGN KEY (ci) references personal(ci),
+FOREIGN KEY (coditp) references tipo_producto(coditp)
+ON DELETE CASCADE
+ON UPDATE CASCADE
+);
+
+create table detalle_compra(
+codicom integer not null,
+codiprod integer not null,
+preciocompra integer,
+cantidadcompra integer,
+descripcioncompra varchar(100),
+PRIMARY KEY(codicom,codiprod),
+FOREIGN KEY (codicom) references compra(codicom),
+FOREIGN KEY (codiprod) references producto(codiprod)
+ON DELETE CASCADE
+ON UPDATE CASCADE
+);
+
+create table tipo_venta(
+coditv serial PRIMARY KEY,
+tipopago varchar(50) not null
+);
+
+create table venta(
+codiv serial PRIMARY KEY,
+fechaventa date not null,
+precioventa integer,
+coditv integer not null,
+FOREIGN KEY (coditv) references tipo_venta(coditv)
+ON DELETE CASCADE
+ON UPDATE CASCADE
+);
+
+create table detalle_venta(
+codiprod integer not null,
+codiv integer not null,
+cantidadventa integer,
+precioventa integer,
+descripcionventa varchar(50) not null,
+PRIMARY KEY(codiprod,codiv),
+FOREIGN KEY (codiprod) references producto(codiprod),
+FOREIGN KEY (codiv) references venta(codiv)
+ON DELETE CASCADE
+ON UPDATE CASCADE
+);
+
+create table cliente(
+cic integer PRIMARY KEY,
+nombre varchar(50) not null,
+apellido varchar(50) not null,
+direccion varchar(50),
+celular integer,
+sexo varchar(1)
+);
+
+create table factura(
+numerofactura integer PRIMARY KEY,
+detalle varchar(100),
+precio integer,
+fechafactura date not null,
+codiv integer not null,
+cic integer not null, 
+FOREIGN KEY (codiv) references venta(codiv),
+FOREIGN KEY (cic) references cliente(cic)
+ON DELETE CASCADE
+ON UPDATE CASCADE
+);
