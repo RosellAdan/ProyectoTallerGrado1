@@ -1,6 +1,6 @@
 ﻿create table tipo_personal(
 idp varchar(50) PRIMARY KEY,
-descripcionp varchar(50) not null
+descripcion varchar(50) not null
 );
 
 create table personal(
